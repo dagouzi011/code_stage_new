@@ -17,8 +17,8 @@ kR_bar = 1.5
 z_bar = 35.0
 n = 3
 σ = 0.2
-tf = 100.0
-
+tf = 30.0
+ϵ =1e-5
 # ------------------ Biological Functions ------------------
 function I_light(z)
     return I0 * exp(-α * z)
@@ -41,7 +41,7 @@ ocp = @def begin
     p(0) == 0.2
     z(0) == 20.0
     0 ≤ U(t)[1] ≤ 1
-    -1 ≤ U(t)[2] ≤ 1
+    -34 ≤ U(t)[2] ≤ 34
     0 ≤ c(t) ≤ 1
     0 ≤ p(t) ≤ 1
     0 ≤ z(t) ≤ L
@@ -51,7 +51,7 @@ ocp = @def begin
         U(t)[1] * kR(z(t)) * c(t) * (1 - c(t) - p(t)) - vP(p(t), z(t)) * p(t),
         U(t)[2]
     ]
-    ∫(vP(p(t), z(t))) → max
+    ∫(vP(p(t), z(t))- ϵ * (U(t)[1]^2 + U(t)[2]^2)) → max
 end
 
 sol_ocp = solve(ocp, :direct, :adnlp, :ipopt, grid_size=500)
